@@ -7,7 +7,6 @@ import re
 import os
 import ctypes
 from ctypes import *
-
 import wcpapi
 from wcpapi import wcserver_h, wcsmw_h
 from wcpapi.wcserver_h import *

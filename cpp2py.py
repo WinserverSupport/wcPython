@@ -579,6 +579,16 @@ if __name__ == "__main__":
        output_file = "wcpapi/wcsgate_h.py"
        functions_to_ctypes(input_file, output_file, "wcsgate")
 
+    if 1:
+       #print(f"# Create wcdoor32 wcPython structures and functions")
+       #input_file  = "include/wcdoor32.h"
+       #output_file = "wcpapi/wcdoor32_h.py"
+       #structures_to_ctypes(input_file, output_file, ["ExtraHeaders"])
+
+       input_file  = "include/wcdoor32.h"
+       output_file = "wcpapi/wcdoor32_h.py"
+       functions_to_ctypes(input_file, output_file, "wcdoor32")
+
 
     #print("done")
     #msvcrt.getch()

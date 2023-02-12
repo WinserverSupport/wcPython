@@ -341,6 +341,10 @@ if __name__ == "__main__":
     out_file = "wcpapi\\wctype_constants_h.py"
     convert_c_to_python(in_file, out_file)
 
+    in_file  = "include\\wcdoor32.h"
+    out_file = "wcpapi\\wcdoor32_constants_h.py"
+    convert_c_to_python(in_file, out_file)
+
 
 
 

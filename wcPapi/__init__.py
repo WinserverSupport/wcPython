@@ -6,6 +6,7 @@ import ctypes
 DLL_SRV_LOADED = False
 DLL_SMW_LOADED = False
 DLL_SGATE_LOADED = False
+DLL_SDOOR32_LOADED = False
 
 def find_dll(dll_name):
     MAX_PATH = 260  # max length of a path in Windows
@@ -58,5 +59,20 @@ def initialize_wcsgate_dll():
           raise FileNotFoundError("Could not find the DLL file: {0:s}".format(DLL_BASE_NAME))
        wildcat_dll = ctypes.WinDLL(WildcatDll)
        DLL_SGATE_LOADED = True
+    return wildcat_dll
+
+def initialize_wcdoor32_dll():
+    wildcat_dll = None
+    global DLL_SDOOR32_LOADED
+    if not DLL_SDOOR32_LOADED:
+       DLL_BASE_NAME   = "wcdoor32.dll"
+       if sys.maxsize > 2**32-1:
+          DLL_BASE_NAME   = "wcdoor32x64.dll"
+       WildcatDll = find_dll(DLL_BASE_NAME)
+       if not os.path.exists(WildcatDll):
+          print("Error",ctypes.GetLastError()," loading [{0:s}]".format(WildcatDll))
+          raise FileNotFoundError("Could not find the DLL file: {0:s}".format(DLL_BASE_NAME))
+       wildcat_dll = ctypes.WinDLL(WildcatDll)
+       DLL_SDOOR32_LOADED = True
     return wildcat_dll
 
