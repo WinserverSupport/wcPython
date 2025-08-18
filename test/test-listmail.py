@@ -91,7 +91,7 @@ def doit(cnum, bList):
 #------------------------------------------------------
 if __name__ == "__main__":
 
-   if 0:
+   if 1:
       cnum = 9
       bList = 1
    else:
