@@ -1,5 +1,5 @@
 Wildcat! Python API (wcPAPI)
-(c) Copyright 1998-2024 Santronics Software, Inc. All Rights Reserved.
+(c) Copyright 1998-2025 Santronics Software, Inc. All Rights Reserved.
 
 Version   : 8.0
 Build     : 454.16
