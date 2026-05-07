@@ -22,7 +22,7 @@ if %HOUR% GEQ 10 if %HOUR% LSS 17 goto :quiet
 
 REM Active window -- poll
 echo %DATE% %TIME% -- polling BinkP feedback... >> "%LOG%"
-python "c:\local\claude\wcBinkp\check-binkp-feedback.py" >> "%LOG%" 2>&1
+python "c:\local\claude\wcBinkp\check-binkp-feedback.py" --state detect-terry.state >> "%LOG%" 2>&1
 goto :eof
 
 :quiet
