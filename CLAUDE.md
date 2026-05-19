@@ -246,8 +246,9 @@ py wcat-agent.py [options]
       Be concise. Sign as 'AI Triage Agent'."
 
    Polling schedule: add to existing wcat-agent run cycle or run as a
-   separate scheduled task. No schema changes needed on NTBBS -- run
-   c:\local\wc10\wcFleaTrack\alter-add-ai-columns.sql first.
+   separate scheduled task. No schema changes needed -- MySQL is on HDEV20
+   only (shared by MAIN4 + NTBBS). alter-add-ai-columns.sql already run
+   2026-05-18.
 
 2. **SMTP Ticket Filter (smtpfilter-ticket.wcc)** -- New feature. Monitor
    incoming email at the SMTP DATA state for sales-related, paid Platinum
