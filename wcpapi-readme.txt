@@ -1,5 +1,6 @@
 # title: wcPAPI Wildcat! Python API
 # date : 01/30/23 07:30 pm
+# update: 06/06/26 - wc10 platform alignment (10.0.500.2)
 
 # wcSDK to Python translators.
 # Use wcpapi-make.cmd to run the scripts
@@ -12,7 +13,7 @@ wcpapi-make.cmd         runs the cpp2*.py translators, creates wcpapi\wc*_h.py f
 
 wcpapi-install.cmd      do first time to pip install dist\* file.
 
-    dist/wcpapi-8.0.454.13.tar.gz
+    dist/wcpapi-10.0.500.2.tar.gz
 
 wcpapi-update.cmd       do to update the pip installation.
 wcpapi-backup.cmd       edit the change zip name to create backup
@@ -32,7 +33,7 @@ wcPapi/wctype_constants_h.py
 wcPapi/wctype_h.py
 wcPapi/__init__.py
 
-# wcSDK C-based RPC client headers v8.0.454.12
+# wcSDK C-based RPC client headers v10.0.500.2
 
 include/wcgtype.h
 include/wcserver.h

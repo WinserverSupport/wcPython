@@ -1,0 +1,5 @@
+include README.md
+include wcpapi-readme.txt
+include setup.py
+recursive-include wcPapi *.py
+recursive-include test *.py
