@@ -869,7 +869,7 @@ GetFileRecByAreaName.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GetFileRecByAreaDate(DWORD area, const FILETIME &t, TFileRecord &f, DWORD &tid);
 GetFileRecByAreaDate = wcsrv_dll.GetFileRecByAreaDate
-GetFileRecByAreaDate.argtypes = [ctypes.wintypes.DWORD, FILETIME, ctypes.POINTER(TFileRecord), ctypes.POINTER(DWORD)]
+GetFileRecByAreaDate.argtypes = [ctypes.wintypes.DWORD, ctypes.POINTER(FILETIME), ctypes.POINTER(TFileRecord), ctypes.POINTER(DWORD)]
 GetFileRecByAreaDate.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GetFileRecByUploader(DWORD id, TFileRecord &f, DWORD &tid);
@@ -933,12 +933,12 @@ SearchFileRecByAreaName.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY SearchFileRecByAreaDate(DWORD area, const FILETIME &t, TFileRecord &f, DWORD &tid);
 SearchFileRecByAreaDate = wcsrv_dll.SearchFileRecByAreaDate
-SearchFileRecByAreaDate.argtypes = [ctypes.wintypes.DWORD, FILETIME, ctypes.POINTER(TFileRecord), ctypes.POINTER(DWORD)]
+SearchFileRecByAreaDate.argtypes = [ctypes.wintypes.DWORD, ctypes.POINTER(FILETIME), ctypes.POINTER(TFileRecord), ctypes.POINTER(DWORD)]
 SearchFileRecByAreaDate.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY SearchFileRecByDateArea(const FILETIME &t, DWORD area, TFileRecord &f, DWORD &tid);
 SearchFileRecByDateArea = wcsrv_dll.SearchFileRecByDateArea
-SearchFileRecByDateArea.argtypes = [FILETIME, ctypes.wintypes.DWORD, ctypes.POINTER(TFileRecord), ctypes.POINTER(DWORD)]
+SearchFileRecByDateArea.argtypes = [ctypes.POINTER(FILETIME), ctypes.wintypes.DWORD, ctypes.POINTER(TFileRecord), ctypes.POINTER(DWORD)]
 SearchFileRecByDateArea.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY SearchFileRecByUploader(DWORD id, TFileRecord &f, DWORD &tid);
