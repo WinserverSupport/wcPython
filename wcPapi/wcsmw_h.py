@@ -98,12 +98,12 @@ MwGetSecurityProfiles.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY MwAddSecurityProfile(const TSecurityProfile &profile, DWORD &index);
 MwAddSecurityProfile = wcsmw_dll.MwAddSecurityProfile
-MwAddSecurityProfile.argtypes = [TSecurityProfile, ctypes.POINTER(DWORD)]
+MwAddSecurityProfile.argtypes = [ctypes.POINTER(TSecurityProfile), ctypes.POINTER(DWORD)]
 MwAddSecurityProfile.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY MwUpdateSecurityProfile(DWORD index, const TSecurityProfile &profile);
 MwUpdateSecurityProfile = wcsmw_dll.MwUpdateSecurityProfile
-MwUpdateSecurityProfile.argtypes = [ctypes.wintypes.DWORD, TSecurityProfile]
+MwUpdateSecurityProfile.argtypes = [ctypes.wintypes.DWORD, ctypes.POINTER(TSecurityProfile)]
 MwUpdateSecurityProfile.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY MwRemoveSecurityProfile(DWORD index);
@@ -167,7 +167,7 @@ MwGetObjectFlags.restype = ctypes.wintypes.DWORD
 
 ##BOOL APIENTRY MwGetMultipleObjectFlags(DWORD groupindex, const DWORD *objectid, DWORD count, DWORD *flags);
 MwGetMultipleObjectFlags = wcsmw_dll.MwGetMultipleObjectFlags
-MwGetMultipleObjectFlags.argtypes = [ctypes.wintypes.DWORD, DWORD, ctypes.wintypes.DWORD, ctypes.POINTER(DWORD)]
+MwGetMultipleObjectFlags.argtypes = [ctypes.wintypes.DWORD, ctypes.POINTER(DWORD), ctypes.wintypes.DWORD, ctypes.POINTER(DWORD)]
 MwGetMultipleObjectFlags.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY MwSetObjectFlags(DWORD groupindex, DWORD objectid, DWORD flags);
@@ -177,7 +177,7 @@ MwSetObjectFlags.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY MwSetMultipleObjectFlags(DWORD groupindex, const DWORD *objectid, const DWORD *flags, DWORD count);
 MwSetMultipleObjectFlags = wcsmw_dll.MwSetMultipleObjectFlags
-MwSetMultipleObjectFlags.argtypes = [ctypes.wintypes.DWORD, DWORD, DWORD, ctypes.wintypes.DWORD]
+MwSetMultipleObjectFlags.argtypes = [ctypes.wintypes.DWORD, ctypes.POINTER(DWORD), ctypes.POINTER(DWORD), ctypes.wintypes.DWORD]
 MwSetMultipleObjectFlags.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY MwGetObjectFlagsInGroups(DWORD objectid, DWORD *flags);
@@ -187,7 +187,7 @@ MwGetObjectFlagsInGroups.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY MwSetObjectFlagsInGroups(DWORD objectid, const DWORD *flags);
 MwSetObjectFlagsInGroups = wcsmw_dll.MwSetObjectFlagsInGroups
-MwSetObjectFlagsInGroups.argtypes = [ctypes.wintypes.DWORD, DWORD]
+MwSetObjectFlagsInGroups.argtypes = [ctypes.wintypes.DWORD, ctypes.POINTER(DWORD)]
 MwSetObjectFlagsInGroups.restype = ctypes.wintypes.BOOL
 
 
@@ -215,7 +215,7 @@ MwGetComputerConfigs.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY MwAddComputerConfig(const TComputerConfig &ccoonfig, DWORD &index);
 MwAddComputerConfig = wcsmw_dll.MwAddComputerConfig
-MwAddComputerConfig.argtypes = [TComputerConfig, ctypes.POINTER(DWORD)]
+MwAddComputerConfig.argtypes = [ctypes.POINTER(TComputerConfig), ctypes.POINTER(DWORD)]
 MwAddComputerConfig.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY MwUpdateComputerConfig(DWORD index, TComputerConfig &cconfig);
@@ -389,7 +389,7 @@ MwAddDoor.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY MwUpdateDoor(DWORD index, const TDoorInfo &di);
 MwUpdateDoor = wcsmw_dll.MwUpdateDoor
-MwUpdateDoor.argtypes = [ctypes.wintypes.DWORD, TDoorInfo]
+MwUpdateDoor.argtypes = [ctypes.wintypes.DWORD, ctypes.POINTER(TDoorInfo)]
 MwUpdateDoor.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY MwRemoveDoor(DWORD index);
@@ -410,12 +410,12 @@ MwGetLanguages.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY MwAddLanguage(const TLanguageInfo &li, DWORD &index);
 MwAddLanguage = wcsmw_dll.MwAddLanguage
-MwAddLanguage.argtypes = [TLanguageInfo, ctypes.POINTER(DWORD)]
+MwAddLanguage.argtypes = [ctypes.POINTER(TLanguageInfo), ctypes.POINTER(DWORD)]
 MwAddLanguage.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY MwUpdateLanguage(DWORD index, const TLanguageInfo &li);
 MwUpdateLanguage = wcsmw_dll.MwUpdateLanguage
-MwUpdateLanguage.argtypes = [ctypes.wintypes.DWORD, TLanguageInfo]
+MwUpdateLanguage.argtypes = [ctypes.wintypes.DWORD, ctypes.POINTER(TLanguageInfo)]
 MwUpdateLanguage.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY MwRemoveLanguage(DWORD index);
@@ -445,12 +445,12 @@ MwGetModemProfile.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY MwAddModemProfile(const TModemProfile &mp, DWORD &index);
 MwAddModemProfile = wcsmw_dll.MwAddModemProfile
-MwAddModemProfile.argtypes = [TModemProfile, ctypes.POINTER(DWORD)]
+MwAddModemProfile.argtypes = [ctypes.POINTER(TModemProfile), ctypes.POINTER(DWORD)]
 MwAddModemProfile.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY MwUpdateModemProfile(DWORD index, const TModemProfile &mp);
 MwUpdateModemProfile = wcsmw_dll.MwUpdateModemProfile
-MwUpdateModemProfile.argtypes = [ctypes.wintypes.DWORD, TModemProfile]
+MwUpdateModemProfile.argtypes = [ctypes.wintypes.DWORD, ctypes.POINTER(TModemProfile)]
 MwUpdateModemProfile.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY MwRemoveModemProfile(DWORD index);
@@ -474,7 +474,7 @@ MwGetNodeConfigs.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY MwUpdateNodeConfig(DWORD node, const TNodeConfig &nc);
 MwUpdateNodeConfig = wcsmw_dll.MwUpdateNodeConfig
-MwUpdateNodeConfig.argtypes = [ctypes.wintypes.DWORD, TNodeConfig]
+MwUpdateNodeConfig.argtypes = [ctypes.wintypes.DWORD, ctypes.POINTER(TNodeConfig)]
 MwUpdateNodeConfig.restype = ctypes.wintypes.BOOL
 
 
@@ -511,6 +511,29 @@ MwReloadDomainConfig.restype = ctypes.wintypes.BOOL
 
 #//!----------------------------------------------------------------
 #//+ Group: Server File Directory
+#//!----------------------------------------------------------------
+
+#//!----------------------------------------------------------------
+#//! 500.3 26.9.18  *** DEPRECATED -- USE WcFindFirstFile INSTEAD. ***
+#//!
+#//! Added 453.5rc1 for a wcConfig DKIM key page that was never
+#//! finished.  No caller was ever written in wc5, wc8 or wc10.
+#//!
+#//! They did a raw Win32 FindFirstFile() on the string given, so they
+#//! could not open a "wc:" path at all -- the only namespace a REMOTE
+#//! Makewild client can usefully name -- and they missed everything
+#//! inside wildcat.wcl, which only TFindFirstCode enumerates.
+#//!
+#//! USE THESE INSTEAD.  A Makewild client may call them: MwLogin()
+#//! routes through SetSystemLogin(), so the context is logged in.
+#//!
+#//!     WcFindFirstFile("wc:\code\*.wcx", &fd)
+#//!     WcFindNextFile(ff, &fd)
+#//!     WcCloseHandle(ff)
+#//!
+#//! The server now returns WC_UNSUPPORTED_VERSION for all three.  The
+#//! declarations and the IDL entries remain because RPC opnums are
+#//! POSITIONAL -- removing them would break every deployed client.
 #//!----------------------------------------------------------------
 
 ##WCHANDLE APIENTRY MwFindFirstFile(LPCTSTR fn, WIN32_FIND_DATA *fd);

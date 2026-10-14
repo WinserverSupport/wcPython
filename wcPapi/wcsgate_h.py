@@ -43,12 +43,12 @@ GateGetQwkHostByName.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GateAddQwkHost(const TGateQwkHost &host, DWORD &index);
 GateAddQwkHost = wcsgate_dll.GateAddQwkHost
-GateAddQwkHost.argtypes = [TGateQwkHost, ctypes.POINTER(DWORD)]
+GateAddQwkHost.argtypes = [ctypes.POINTER(TGateQwkHost), ctypes.POINTER(DWORD)]
 GateAddQwkHost.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GateUpdateQwkHost(DWORD index, const TGateQwkHost &host);
 GateUpdateQwkHost = wcsgate_dll.GateUpdateQwkHost
-GateUpdateQwkHost.argtypes = [ctypes.wintypes.DWORD, TGateQwkHost]
+GateUpdateQwkHost.argtypes = [ctypes.wintypes.DWORD, ctypes.POINTER(TGateQwkHost)]
 GateUpdateQwkHost.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GateRemoveQwkHost(DWORD index);
@@ -69,7 +69,7 @@ GateGetQwkHubConf.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GateSetQwkConf(const char *hostname, DWORD conference, const TGateQwkConf &conf);
 GateSetQwkConf = wcsgate_dll.GateSetQwkConf
-GateSetQwkConf.argtypes = [CString, ctypes.wintypes.DWORD, TGateQwkConf]
+GateSetQwkConf.argtypes = [CString, ctypes.wintypes.DWORD, ctypes.POINTER(TGateQwkConf)]
 GateSetQwkConf.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GateUnsetQwkConf(const char *hostname, DWORD conference);
@@ -115,7 +115,7 @@ GateGetUucpConfig.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GateUpdateUucpConfig(const TGateUucpConfig &config);
 GateUpdateUucpConfig = wcsgate_dll.GateUpdateUucpConfig
-GateUpdateUucpConfig.argtypes = [TGateUucpConfig]
+GateUpdateUucpConfig.argtypes = [ctypes.POINTER(TGateUucpConfig)]
 GateUpdateUucpConfig.restype = ctypes.wintypes.BOOL
 
 
@@ -130,12 +130,12 @@ GateGetUucpHost.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GateAddUucpHost(const TGateUucpHost &host, DWORD &index);
 GateAddUucpHost = wcsgate_dll.GateAddUucpHost
-GateAddUucpHost.argtypes = [TGateUucpHost, ctypes.POINTER(DWORD)]
+GateAddUucpHost.argtypes = [ctypes.POINTER(TGateUucpHost), ctypes.POINTER(DWORD)]
 GateAddUucpHost.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GateUpdateUucpHost(DWORD index, const TGateUucpHost &host);
 GateUpdateUucpHost = wcsgate_dll.GateUpdateUucpHost
-GateUpdateUucpHost.argtypes = [ctypes.wintypes.DWORD, TGateUucpHost]
+GateUpdateUucpHost.argtypes = [ctypes.wintypes.DWORD, ctypes.POINTER(TGateUucpHost)]
 GateUpdateUucpHost.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GateRemoveUucpHost(DWORD index);
@@ -207,12 +207,12 @@ GateGetMailingList.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GateAddMailingList(const TGateMailingList &ml, DWORD &index);
 GateAddMailingList = wcsgate_dll.GateAddMailingList
-GateAddMailingList.argtypes = [TGateMailingList, ctypes.POINTER(DWORD)]
+GateAddMailingList.argtypes = [ctypes.POINTER(TGateMailingList), ctypes.POINTER(DWORD)]
 GateAddMailingList.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GateUpdateMailingList(DWORD index, const TGateMailingList &ml);
 GateUpdateMailingList = wcsgate_dll.GateUpdateMailingList
-GateUpdateMailingList.argtypes = [ctypes.wintypes.DWORD, TGateMailingList]
+GateUpdateMailingList.argtypes = [ctypes.wintypes.DWORD, ctypes.POINTER(TGateMailingList)]
 GateUpdateMailingList.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GateRemoveMailingList(DWORD index);
@@ -236,12 +236,12 @@ GateGetHostTranslate.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GateAddHostTranslate(DWORD host, const TGateTranslateEntry &te, DWORD &index);
 GateAddHostTranslate = wcsgate_dll.GateAddHostTranslate
-GateAddHostTranslate.argtypes = [ctypes.wintypes.DWORD, TGateTranslateEntry, ctypes.POINTER(DWORD)]
+GateAddHostTranslate.argtypes = [ctypes.wintypes.DWORD, ctypes.POINTER(TGateTranslateEntry), ctypes.POINTER(DWORD)]
 GateAddHostTranslate.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GateUpdateHostTranslate(DWORD host, DWORD index, const TGateTranslateEntry &te);
 GateUpdateHostTranslate = wcsgate_dll.GateUpdateHostTranslate
-GateUpdateHostTranslate.argtypes = [ctypes.wintypes.DWORD, ctypes.wintypes.DWORD, TGateTranslateEntry]
+GateUpdateHostTranslate.argtypes = [ctypes.wintypes.DWORD, ctypes.wintypes.DWORD, ctypes.POINTER(TGateTranslateEntry)]
 GateUpdateHostTranslate.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GateRemoveHostTranslate(DWORD host, DWORD index);

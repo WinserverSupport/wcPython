@@ -13,6 +13,8 @@
 # Version  Date      Author  Comments
 # -------  --------  ------  -------------------------------------------
 # 1.1      02/02/23  HLS     fixed PropertyStruct to handle utf-8
+# 1.2      09/02/26  HLS     WcFreeMemory void* arg; void return -> None
+# 1.3      10/14/26  HLS     const & and const DWORD* args -> POINTER(type)
 #***********************************************************************
 
 import os
@@ -373,6 +375,29 @@ def functions_to_ctypes(header_file, output_file, dll_key):
                         outf.write(f"##{func_line}\n")
 
                         # start of special cases
+
+                        # 1.2 09/02/26
+                        # A "void *" PARAMETER is mapped to c_void_p by
+                        # type_map and then wrapped again because of the
+                        # '*', giving POINTER(c_void_p) -- one level too
+                        # many for a function that just takes a pointer.
+                        #
+                        # Not fixed globally on purpose: WcReadFile,
+                        # WcReadLine, wcDoorRead, wcDoorReadPeek and
+                        # GetUserVariables already ship with
+                        # POINTER(c_void_p) and callers cast to match, so
+                        # changing the mapping would break them.
+                        if func_name in ["WcFreeMemory"]:
+                            func_proto =""
+                            func_proto += f"{func_name} = {dll_key}_dll.{func_name}\n"
+                            func_proto += f"{func_name}.argtypes = [ctypes.c_void_p]\n"
+                            func_proto += f"{func_name}.restype = None\n\n"
+                            outf.write(func_proto)
+                            if debug: print(func_proto)
+
+                            line = f.readline()
+                            if not line: break
+                            continue
                         if func_name in ["GetSecurityProfileNames","GetAccessProfileNames"]:
                             func_proto =""
                             func_proto += f"{func_name} = {dll_key}_dll.{func_name}\n"
@@ -446,7 +471,15 @@ def functions_to_ctypes(header_file, output_file, dll_key):
 
                         #if debug: print(f"args:",args)
 
-                        ret_type = type_map.get(ret_type, ret_type)
+                        # 1.2 09/02/26 - a function returning plain "void"
+                        # must give restype None, not c_void_p.  The
+                        # type_map entry for void exists for void* USES;
+                        # as a RETURN type it made ctypes hand back a
+                        # meaningless pointer object.
+                        if ret_type.strip() == "void":
+                            ret_type = "None"
+                        else:
+                            ret_type = type_map.get(ret_type, ret_type)
                         if args:
                             arg_list = args.split(',')
                             arg_list = [a.strip() for a in arg_list]
@@ -477,7 +510,8 @@ def functions_to_ctypes(header_file, output_file, dll_key):
                                         isPointer = True;
                                         aname = aname.lstrip("*")
                                         atype = atype+"*"
-                                    elif not isConst and aname.startswith("&"):
+                                    # 1.3 10/14/26 - const & is a pointer too
+                                    elif aname.startswith("&"):
                                         isPointer = True;
                                         aname =  aname.lstrip("&")
                                         atype = atype+"*"
@@ -509,7 +543,10 @@ def functions_to_ctypes(header_file, output_file, dll_key):
                                        isPointer = True
                                        arg_type = atype
 
-                                    if isConst and isPointer:
+                                    # 1.3 10/14/26 - only drop the pointer when the
+                                    # mapped type already is one; const struct &
+                                    # and const DWORD * stay POINTER(type)
+                                    if isConst and isPointer and arg_type in ("ctypes.c_void_p", "ctypes.c_wchar_p"):
                                        isPointer = False
 
                                     if arg_type == "ctypes.c_char_p":

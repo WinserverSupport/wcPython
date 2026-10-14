@@ -1,4 +1,4 @@
-# Auto-created by cpp2constant.py on 2023-02-12 13:28:01.026424
+# Auto-created by cpp2constant.py on 2026-10-14 13:08:48.385854
 # input file : include\wcgtype.h
 # output file: wcpapi\wcgtype_constants_h.py
 

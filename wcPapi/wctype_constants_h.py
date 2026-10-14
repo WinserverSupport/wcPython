@@ -1,4 +1,4 @@
-# Auto-created by cpp2constant.py on 2023-02-12 13:28:01.028423
+# Auto-created by cpp2constant.py on 2026-10-14 13:08:48.397996
 # input file : include\wctype.h
 # output file: wcpapi\wctype_constants_h.py
 
@@ -8,8 +8,8 @@ MAX_PATH                                 = 260
 
 #+ Group: Client Structures
 
-WILDCAT_FRAMEWORK_VERSION                = 1
-WILDCAT_MKTG_VERSION                     = 8
+WILDCAT_FRAMEWORK_VERSION                = 2
+WILDCAT_MKTG_VERSION                     = 10
 
 WILDCAT_COMPONENT_ICP                    = 0x00000001
 WILDCAT_COMPONENT_SSL                    = 0x00000002
@@ -162,7 +162,9 @@ OBJECTID_ALLOW_TELNET_ACCESS             = OBJECTCLASS_RIGHTS + 42
 OBJECTID_CHANGE_EMAILADDRESS             = OBJECTCLASS_RIGHTS + 43
 OBJECTID_CHANGE_SMTPFORWARD              = OBJECTCLASS_RIGHTS + 44
 OBJECTID_ALLOW_CC_GROUPS                 = OBJECTCLASS_RIGHTS + 45
-OBJECTID_ALLOW_IMAP_AUTH                 = OBJECTCLASS_RIGHTS + 37 #// 46
+OBJECTID_ALLOW_IMAP_AUTH                 = OBJECTCLASS_RIGHTS + 37 #// same as SMTP_AUTH 46
+OBJECTID_ALLOW_SFTP_ACCESS               = OBJECTCLASS_RIGHTS + 46 #// 500.3 26.9.15
+OBJECTID_ALLOW_STELNET_ACCESS            = OBJECTCLASS_RIGHTS + 47 #// 500.3 26.10.4
 
 OBJECTID_PROTOCOL_ACCESS                 = OBJECTCLASS_RIGHTS + 0x00010000 #// plus protocol number
 OBJECTID_NODE_ACCESS                     = OBJECTCLASS_RIGHTS + 0x00020000 #// plus node number
@@ -267,7 +269,7 @@ mhcAsIs                                  = 2
 class TWildcatLogPeriod(IntEnum):
 	wclogNone                                = 0
 	wclogHourly                              = 1
-	wclogDaily                               = 2 ## default for most things
+	wclogDaily                               = 2
 	wclogWeekly                              = 3
 	wclogMonthly                             = 4
 	wclogUnlimitedSize                       = 5
@@ -304,7 +306,7 @@ ipfilterBlock                            = 3
 
 pop3MarkRcvd                             = 0x0001 #! Mark downloads as received
 pop3HonorRR                              = 0x0002 #! Honor Return Request
-pop3ResolveHost                          = 0x0020 #! 450.9b3 resolve host name
+pop3ResolveHost                          = 0x0020 #! resolve host name
 
 #!
 #! TWildcatSMTP.dwOptions Bit Flags
@@ -315,14 +317,15 @@ smtpRcvdBin                              = 0x0002 #! Enable Receiver Bin
 smtpNoMXOnce                             = 0x0004 #! Enable RFC821 No MX try once rule
 smtpIpFilter                             = 0x0008 #! Enable IP Filter
 smtpIncMXTries                           = 0x0010 #! MXs included in total attempts
-smtpResolveHost                          = 0x0020 #! 450.9b3 resolve host name
-smtpDisableETRN                          = 0x0040 #! 450.9b13
-smtpAllowLocal                           = 0x0080 #! 451.3 Allow (auth) Local Email
-smtpCheckHello                           = 0x0100 #! 451.4 Enable Helo/Ehlo Check
-smtpEnableWCSAP                          = 0x0200 #! 451.5 Enable WCSAP
-smtpEnableSFHook                         = 0x0400 #! 451.5 Enable SMTPFILTER Hook
-smtpUsePort587                           = 0x0800 #! 451.6 Submit Protocol
-smtpReadBadFilter                        = 0x1000 #! 452.7/453.1 Read only BadFilter (don't add)
+smtpResolveHost                          = 0x0020 #! resolve host name
+smtpDisableETRN                          = 0x0040 #! Disable ETRN command
+smtpAllowLocal                           = 0x0080 #! Allow (auth) Local Email
+smtpCheckHello                           = 0x0100 #! Enable Helo/Ehlo Check
+smtpEnableWCSAP                          = 0x0200 #! Enable WCSAP
+smtpEnableSFHook                         = 0x0400 #! Enable SMTPFILTER Hook
+smtpUsePort587                           = 0x0800 #! Submit Protocol
+smtpReadBadFilter                        = 0x1000 #! Read only BadFilter (don't add)
+smtpReqSSLAuth                           = 0x2000 #! Require SSL for SMTP AUTH
 
 #!
 #! TWildcatFTP.dwOptions Bit Flags
@@ -331,9 +334,89 @@ smtpReadBadFilter                        = 0x1000 #! 452.7/453.1 Read only BadFi
 ftpBit0                                  = 0x0001 #! ignore this bit
 ftpUnixFileAge                           = 0x0002 #! Use Unix-style File Age Range
 ftpUseFtpLimit                           = 0x0004 #! Use Security Profile Limits
-ftpCheckForDIZ                           = 0x0008 #! Check for DIZ in zip uploads (450.8)
-ftpResolveHost                           = 0x0020 #! 450.9b3 resolve host name
-ftpDisableIndex                          = 0x0040 #! 451.4e Disable Index Files
+ftpCheckForDIZ                           = 0x0008 #! Check for DIZ in zip uploads
+ftpResolveHost                           = 0x0020 #! resolve host name
+ftpDisableIndex                          = 0x0040 #! Disable Index Files
+
+#!
+#! TWildcatSFTP.dwOptions Bit Flags     500.3 26.9.15
+#!
+#! The first four values MATCH their ftpXXXX equivalents on purpose, so the
+#! two option words can be compared or copied without a translation table.
+#! Today wcSFTP BORROWS these four from FTPConfig.dwOptions, which means a
+#! sysop cannot configure SFTP listings independently of FTP -- that is the
+#! main functional gain from this struct.
+#!
+
+sftpBit0                                 = 0x0001 #! ignore this bit
+sftpUnixFileAge                          = 0x0002 #! Use Unix-style File Age Range
+sftpUseSecLimit                          = 0x0004 #! Use Security Profile Limits
+sftpCheckForDIZ                          = 0x0008 #! Check for DIZ in uploads
+sftpResolveHost                          = 0x0020 #! resolve host name
+sftpDisableIndex                         = 0x0040 #! Disable Index Files
+sftpIdleDisconnect                       = 0x0080 #! Drop idle sessions
+sftpEnableWcxConnect                     = 0x0100 #! Run the sftpcmd-connect hook
+sftpAllowPassword                        = 0x0200 #! Permit password authentication
+sftpAllowPublicKey                       = 0x0400 #! Permit publickey authentication
+sftpRequirePublicKey                     = 0x0800
+
+#! 500.3 26.9.15  NAMESPACE OPTIONS -- revision 2.
+#!
+#! These three decide the SHAPE of the directory tree a client sees and
+#! how an area name becomes a path component.  They were read from
+#! TWildcatFTP (ShowFileGroups / UseUnderScore / UseSingleAreaChange)
+#! until now, deliberately, so that a partner migrating from FTP saw
+#! identical paths.
+#!
+#! They are separate as of revision 2 because a site may want SFTP to
+#! present a DIFFERENT namespace -- typically a flatter one for a new
+#! partner -- without disturbing the FTP paths their existing partners
+#! already have hardcoded.
+#!
+#! THE MIGRATION MATTERS MORE THAN THE BITS.  An installation upgrading
+#! from revision 1 has these bits ZERO, which would silently turn file
+#! groups OFF and change every path a partner uses.  wcserver copies the
+#! FTP values across when it sees dwRevision < 2; do not remove that.
+#! 500.3 26.9.16  PUBLICKEY TRUST MODEL -- see saslPUBKEY.
+#!
+#! CLEAR (the default, and the recommended setting) means the signature
+#! is verified a SECOND time inside wcServer by the saslPUBKEY module.
+#! wcoSSH's own libssh verification is then not load-bearing: a client
+#! that reaches wcServer over RPC cannot assert an identity it cannot
+#! cryptographically prove.
+#!
+#! SET means wcServer ACCEPTS wcSFTP's word for it.  That is faster and
+#! avoids verifying twice, but it turns a real trust boundary into an
+#! assertion: ANY wcSDK client able to reach wcServer could then claim
+#! to be any user.  Only set it where the RPC channel itself is trusted
+#! end to end.
+sftpTrustModuleAuth                      = 0x8000
+
+#! 500.3 26.10.4  SSH Public Keys constants:
+#! SSH_KEYS_SECTION    - default "SSH_KEYS"
+#!
+#! SSH_MAX_KEYS        - max public keys for user's extended variables in
+#!                       section [SSH_KEYS_SECTION]. Index 1 to SSH_MAX_KEYS
+#!                       AuthorizedKey1=publickey[ comment]
+#!                       ..
+#!                       AuthorizedKey<SSH_MAX_KEYS>=publickey[ comment]
+#!
+#! SSH_MAX_KEY_LEN     - An ed25519 line is about 110 characters,
+#!                       but an RSA-4096 key alone can be over 700.
+#!                       This max is uses by consumers as a default for
+#!                       the biggest key a partner may reasonably send,
+#!                       plus the comment.
+
+SSH_MAX_KEYS                             = 16
+SSH_MAX_KEY_LEN                          = 2048
+
+#!
+#! wcSFTP Server listing options
+#!
+
+sftpShowFileGroups                       = 0x1000
+sftpUseUnderScore                        = 0x2000
+sftpSingleAreaChange                     = 0x4000 #! Password auth NOT accepted
 
 #!
 #! Password Bit Options for Security Profile and User Record
@@ -343,7 +426,7 @@ pwdChangeForce                           = 0x0001 #// Force change at next logon
 pwdChangeDisallow                        = 0x0002 #// Do not allow password change
 pwdChangeExpire                          = 0x0004 #// Force Change when pwd expires
 pwdExpireLockout                         = 0x0008 #// Lockout account when pwd expires
-pwdAttemptsLockout                       = 0x0010 #// (451.3) TBD. Lockout for max pwds. FUTURE.
+pwdAttemptsLockout                       = 0x0010 #// TBD. Lockout for max pwds. FUTURE.
 
 #!
 #! TWildcatNNTP.dwOptions Bit Flags
@@ -418,10 +501,8 @@ mtEmailOnly                              = 4
 mtUsenetNewsgroup                        = 5
 mtUsenetNewsgroupModerated               = 6
 mtInternetMailingList                    = 7
-# 449.4 02/24/01
 mtFidoEcho                               = 8
 mtListServeForum                         = 9
-# 449.5 05/14/01
 # mtUserEmail is similar to mtInternetMailingList for single user email
 mtUserEmail                              = 10
 mtEND                                    = 256
@@ -431,7 +512,6 @@ vnNo                                     = 1
 vnPrompt                                 = 2
 
 #!
-#! 449.5
 #! The following maXXXXXXXXX bit flags are used in the
 #! TConfDesc.Options field.
 #!
@@ -444,7 +524,6 @@ maAllowMsgDelete                         = 0x00000010 #// 452.2, Allow User dele
 maAllowDupes                             = 0x00000020 #// 452.3, No Conference dupe checking
 
 #!
-#! 449.5
 #! Option for TConfDesc.AuthorType field. This will define the
 #! conference option for how the From field will be defined when
 #! a message is created.
@@ -457,7 +536,6 @@ authorAllowBoth                          = 3 # allow either the user or alias
 authorAnonymousName                      = 4 # anonymous from name (any name allowed)
 
 #!
-#! 449.5
 #! TFileArea.Options attributes
 #!
 
@@ -488,8 +566,10 @@ CALLTYPE_SMTP                            = 0x00000080 #// !!! SMTP client
 CALLTYPE_PPP                             = 0x00000100 #// !!! PPP client
 CALLTYPE_RADIUS                          = 0x00000200 #// !!! RADIUS client
 CALLTYPE_NNTP                            = 0x00000400 #// !!! NNTP client
-CALLTYPE_HTTPS                           = 0x00000800 #// !!! HTTPS client (v5.5.450.3)
+CALLTYPE_HTTPS                           = 0x00000800 #// !!! HTTPS client
 CALLTYPE_IMAP                            = 0x00001000 #// !!! IMAP client
+CALLTYPE_SFTP                            = 0x00002000 #// !!! SFTP client	500.3 26.9.15
+CALLTYPE_STELNET                         = 0x00004000 #// !!! SSH Shell/Telnet client 500.3 26.10.4
 
 ccAuto                                   = 0
 ccRLSD                                   = 1
@@ -572,14 +652,18 @@ mfReceiptCreated                         = 0x02000000 #// Return Receipt was cre
 mfSmtpDelivered                          = 0x04000000 #// Message was sent by smtp
 mfNNTPPost                               = 0x08000000 #// Message was posted by wcNNTP
 mfIMAPPost                               = 0x10000000 #// Message was posted by wcIMAP
+mfDigestSent                             = 0x20000000 #// Digest processed by wcListServe (500.2)
 mfMimeSaved                              = 0x00000001 #// Mime Preserved
 mfNoDupeChecking                         = 0x00000002 #// No dupe checking when adding msg (450.6)
 mfNoReplying                             = 0x00000004 #// No Comments/Replies allowed (451.4)
 
+#!
+#! TFileRecord.FileFlags Bits
+#!
 ffAbortedUpload                          = 0x00000001 #// signifies incomplete file.
-ffAllowFileComments                      = 0x00000002 #// 453.2, allows file comments
+ffAllowFileComments                      = 0x00000002 #// allows file comments
 
-#! 453.2
+#!
 #! File Comment
 #!
 
@@ -700,7 +784,6 @@ SE_MAILSERVER_UPDATE                     = 40 #// signals for wcmail/wcsmtp, 450
 #!
 
 #!
-#! v5.5.450.3
 #! Structure for WcGetProcessTimes()
 #! Returns server process running times information
 #!
@@ -729,16 +812,15 @@ saslTranslateBoth                        = 0x00000011 #! Check Dot/Undot name
 #! data we need in SASL based connections
 #!
 
-#! v6.0.451.2
+#!
 #! Structure for wcCreateFileEx() function
 #!
 
-#! v6.3.453.5
+#!
 #! Structure for WcGetWildcatServerGuid() function
 #!
 
 #!
-#! v7.0.454.6
 #! Structure for WcGetGeoIP()
 #!
 

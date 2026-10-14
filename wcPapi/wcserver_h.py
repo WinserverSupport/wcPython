@@ -16,31 +16,33 @@ class SYSTEMTIME(ctypes.Structure):
                 ('wSecond', WORD),
                 ('wMilliseconds', WORD)]
 
-#//*******************************************************************
-#// (c) Copyright 1999 Santronics Software, Inc. All Rights Reserved.
-#//*******************************************************************
+#//***********************************************************************
+#// (c) Copyright 1999-2026 Santronics Software, Inc. All Rights Reserved.
+#//***********************************************************************
 #//
 #// File Name : wcserver.h
-#// Created   : 07/02/99 06:40 pm
-#// Updated   : 04/16/21 09:07 pm, 454.12
-#// Programmer: SSI
+#// Created   : 07/02/99
+#// Updated   : 09/18/26
+#// Version   : v10.0.500.3
 #//
 #// Revision History:
 #// Build  Date     Author  Comments
 #// -----  -------- ------  -------------------------------
 #// 447B2  07/02/99 HLS     - cleaned up
-#//        07/12/99 HLS     - new function: CheckMailIntegrity()
+#//        07/12/99 HLS     - Added CheckMailIntegrity()
 #// 450    05/11/00 SMC     - Added BCB support.  Not complete.
-#//                           Functions dependent on TNodeInfo
-#//                           and TMenuItem needed to be changed.
+#//                           Functions dependent on TNodeInfo and
+#//                           TMenuItem needed to be changed.
 #// 450.7  04/25/03 HLS     - Removed UNICODE parameters (LPCTCHAR
 #//                           and WIN32_FIND_DATA)
-#//
 #// 454.6  07/24/17 HLS     - Added WcGetGeoIP() function
-#//
 #// 454.8  03/17/19 HLS     - Added GetWildcatServerPlatform()
-#//
-#//*******************************************************************
+#// 500.3  09/03/26 HLS     - Added WcFreeMemory()
+#//        09/18/26 HLS     - Added LoginUserPublicKey()
+#//        09/18/26 HLS     - Added IsUserPublicKeyAuthorized()
+#//        10/11/26 HLS     - Publickey calls return WC_NO_PUBLIC_KEYS and
+#//                           WC_PUBLIC_KEY_NOT_LISTED
+#//***********************************************************************
 
 
 
@@ -331,6 +333,116 @@ LoginRadiusUser.restype = ctypes.wintypes.BOOL
 
 
 #///////////////////////////////////////////////////////////////////////////
+#//! 500.3 26.9.17  SSH PUBLIC KEY LOGIN -- RFC 4252 section 7.
+#//!
+#//! Log a user in on the strength of an SSH public key they have PROVEN
+#//! they hold.  Used by wcoSFTP after libssh has verified the client's
+#//! signature over the SSH session id.
+#//!
+#//! WHAT EACH SIDE IS RESPONSIBLE FOR:
+#//!   the CALLER proves POSSESSION of the private key (libssh does this,
+#//!     and frees the signature in the process -- which is why no
+#//!     signature is passed here and why the server cannot re-verify);
+#//!   the SERVER decides AUTHORIZATION, by matching the offered key
+#//!     against that user's [SFTP] AuthorizedKey<n> profile variables.
+#//!     A caller can therefore PRESENT a key but never AUTHORIZE one.
+#//!
+#//! keytype   is the SSH key type token, e.g. "ssh-ed25519" or "ssh-rsa"
+#//! keybase64 is the base64 public key blob
+#//! Together they are the first two fields of an authorized_keys line.
+#//!
+#//! REQUIRES A SYSTEM PASSWORD to be configured.  Unlike
+#//! LoginRadiusUser -- which still verifies a CHAP response and so is
+#//! safe without one -- this call has no second credential check, so it
+#//! returns WC_NOT_CONFIGURED rather than proceeding when none is set.
+#//!
+#//! Key refusals: WC_NO_PUBLIC_KEYS (user has none installed),
+#//! WC_PUBLIC_KEY_NOT_LISTED (not one of the user's keys).
+#///////////////////////////////////////////////////////////////////////////
+##BOOL APIENTRY LoginUserPublicKey(DWORD userid, const char *keytype, const char *keybase64, DWORD calltype, const char *speed, TUser &user);
+LoginUserPublicKey = wcsrv_dll.LoginUserPublicKey
+LoginUserPublicKey.argtypes = [ctypes.wintypes.DWORD, CString, CString, ctypes.wintypes.DWORD, CString, ctypes.POINTER(TUser)]
+LoginUserPublicKey.restype = ctypes.wintypes.BOOL
+
+
+#///////////////////////////////////////////////////////////////////////////
+#//! 500.3 26.9.17  Publickey phase 1 -- "WOULD this key be accepted?"
+#//!
+#//! Answers the UNSIGNED probe an SSH client sends while deciding which
+#//! of its keys to sign with.  Changes NO login state, so it is callable
+#//! before any login exists.
+#//!
+#//! Answer it truthfully: a client with several keys signs with the FIRST
+#//! one the server says it would accept, so saying yes to everything makes
+#//! it sign with the wrong key and fail without trying the right one.
+#//!
+#//! FALSE with GetLastError() WC_NO_PUBLIC_KEYS, WC_PUBLIC_KEY_NOT_LISTED
+#//! or WC_NOT_CONFIGURED.  An older wcServer gives FALSE with 0.
+#///////////////////////////////////////////////////////////////////////////
+##BOOL APIENTRY IsUserPublicKeyAuthorized(DWORD userid, const char *keytype, const char *keybase64);
+IsUserPublicKeyAuthorized = wcsrv_dll.IsUserPublicKeyAuthorized
+IsUserPublicKeyAuthorized.argtypes = [ctypes.wintypes.DWORD, CString, CString]
+IsUserPublicKeyAuthorized.restype = ctypes.wintypes.BOOL
+
+
+#///////////////////////////////////////////////////////////////////////////
+#//! 500.3 26.9.18  SSH PUBLIC KEY MANAGEMENT
+#//!
+#//! The keys live in the user record as [SFTP] AuthorizedKey<n>, scanned
+#//! 1,2,3... and STOPPING AT THE FIRST GAP.  The SERVER owns that
+#//! invariant: delete renumbers, add appends, and a malformed or PRIVATE
+#//! key is refused before it can be stored.
+#//!
+#//! That is why these exist rather than each client using
+#//! Get/SetUserVariable.  wcWEB, wcConfig, a wcBASIC utility and a
+#//! partner self-service page would otherwise each have to renumber
+#//! correctly -- and one mistake locks a partner out while their key
+#//! still LOOKS installed.
+#//!
+#//! Index is 1-based, matching the AuthorizedKey<n> a sysop sees.
+#//! Reading needs a system login; MODIFYING another user's record needs
+#//! MASTER SYSOP.
+#//!
+#//! WcAddUserPublicKey returns the slot used, or 0 on failure.
+#///////////////////////////////////////////////////////////////////////////
+##DWORD APIENTRY WcGetUserPublicKeyCount(DWORD userid);
+WcGetUserPublicKeyCount = wcsrv_dll.WcGetUserPublicKeyCount
+WcGetUserPublicKeyCount.argtypes = [ctypes.wintypes.DWORD]
+WcGetUserPublicKeyCount.restype = ctypes.wintypes.DWORD
+
+##BOOL APIENTRY WcGetUserPublicKey(DWORD userid, DWORD index, char *dest, DWORD destsize);
+WcGetUserPublicKey = wcsrv_dll.WcGetUserPublicKey
+WcGetUserPublicKey.argtypes = [ctypes.wintypes.DWORD, ctypes.wintypes.DWORD, ctypes.c_char_p, ctypes.wintypes.DWORD]
+WcGetUserPublicKey.restype = ctypes.wintypes.BOOL
+
+##DWORD APIENTRY WcAddUserPublicKey(DWORD userid, const char *keyline);
+WcAddUserPublicKey = wcsrv_dll.WcAddUserPublicKey
+WcAddUserPublicKey.argtypes = [ctypes.wintypes.DWORD, CString]
+WcAddUserPublicKey.restype = ctypes.wintypes.DWORD
+
+##BOOL APIENTRY WcDeleteUserPublicKey(DWORD userid, DWORD index);
+WcDeleteUserPublicKey = wcsrv_dll.WcDeleteUserPublicKey
+WcDeleteUserPublicKey.argtypes = [ctypes.wintypes.DWORD, ctypes.wintypes.DWORD]
+WcDeleteUserPublicKey.restype = ctypes.wintypes.BOOL
+
+
+#///////////////////////////////////////////////////////////////////////////
+#//! 500.3 26.9.18  Is a System Password configured?
+#//!
+#//! Publickey login REQUIRES one and refuses with WC_NOT_CONFIGURED
+#//! otherwise.  Ask BEFORE enabling publickey auth so a sysop is warned
+#//! at the point of the decision, rather than meeting a refused login
+#//! that looks exactly like a bad key.
+#//!
+#//! Reports only that a password is SET -- wcsyspw must also have
+#//! stamped it on the machine.
+#///////////////////////////////////////////////////////////////////////////
+##BOOL APIENTRY WcIsSystemPasswordConfigured();
+WcIsSystemPasswordConfigured = wcsrv_dll.WcIsSystemPasswordConfigured
+WcIsSystemPasswordConfigured.restype = ctypes.wintypes.BOOL
+
+
+#///////////////////////////////////////////////////////////////////////////
 #//! Log out of the server.  This is called no matter whether you log in to
 #//! the server using LoginSystem or LoginUser.
 #///////////////////////////////////////////////////////////////////////////
@@ -536,7 +648,7 @@ GetObjectFlags.restype = ctypes.wintypes.DWORD
 
 ##BOOL APIENTRY GetMultipleObjectFlags(const DWORD *objectid, DWORD count, DWORD *flags);
 GetMultipleObjectFlags = wcsrv_dll.GetMultipleObjectFlags
-GetMultipleObjectFlags.argtypes = [DWORD, ctypes.wintypes.DWORD, ctypes.POINTER(DWORD)]
+GetMultipleObjectFlags.argtypes = [ctypes.POINTER(DWORD), ctypes.wintypes.DWORD, ctypes.POINTER(DWORD)]
 GetMultipleObjectFlags.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GetObjectById(DWORD objectid, TObjectName &objectname);
@@ -546,7 +658,7 @@ GetObjectById.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GetMultipleObjectsById(const DWORD *objectid, DWORD count, TObjectName *objectname);
 GetMultipleObjectsById = wcsrv_dll.GetMultipleObjectsById
-GetMultipleObjectsById.argtypes = [DWORD, ctypes.wintypes.DWORD, ctypes.POINTER(TObjectName)]
+GetMultipleObjectsById.argtypes = [ctypes.POINTER(DWORD), ctypes.wintypes.DWORD, ctypes.POINTER(TObjectName)]
 GetMultipleObjectsById.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GetObjectByName(DWORD classid, const char *name, TObjectName &objectname, DWORD &tid);
@@ -785,7 +897,7 @@ GetNodeInfos.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY SetNodeInfo(const TwcNodeInfo &ni);
 SetNodeInfo = wcsrv_dll.SetNodeInfo
-SetNodeInfo.argtypes = [TwcNodeInfo]
+SetNodeInfo.argtypes = [ctypes.POINTER(TwcNodeInfo)]
 SetNodeInfo.restype = ctypes.wintypes.BOOL
 
 
@@ -844,7 +956,7 @@ AddFileRec.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY DeleteFileRec(const TFileRecord &f, BOOL disktoo);
 DeleteFileRec = wcsrv_dll.DeleteFileRec
-DeleteFileRec.argtypes = [TFileRecord, ctypes.wintypes.BOOL]
+DeleteFileRec.argtypes = [ctypes.POINTER(TFileRecord), ctypes.wintypes.BOOL]
 DeleteFileRec.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY FileSearch(const char *s, DWORD &n, unsigned __int64 *&p);
@@ -1077,7 +1189,7 @@ UpdateMessageFidoInfo.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GetHighMessageIds(DWORD count, const DWORD *conferences, DWORD *ids);
 GetHighMessageIds = wcsrv_dll.GetHighMessageIds
-GetHighMessageIds.argtypes = [ctypes.wintypes.DWORD, DWORD, ctypes.POINTER(DWORD)]
+GetHighMessageIds.argtypes = [ctypes.wintypes.DWORD, ctypes.POINTER(DWORD), ctypes.POINTER(DWORD)]
 GetHighMessageIds.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY SetMessageExported(TMsgHeader &msg, BOOL exported);
@@ -1102,7 +1214,7 @@ AddNewUser.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY DeleteOtherUser(const TUser &u);
 DeleteOtherUser = wcsrv_dll.DeleteOtherUser
-DeleteOtherUser.argtypes = [TUser]
+DeleteOtherUser.argtypes = [ctypes.POINTER(TUser)]
 DeleteOtherUser.restype = ctypes.wintypes.BOOL
 
 ##BOOL APIENTRY GetUserById(DWORD id, TUser &u, DWORD &tid);
@@ -1897,6 +2009,24 @@ WcGetWildcatQueueGuid.restype = ctypes.wintypes.BOOL
 WcGetGeoIP = wcsrv_dll.WcGetGeoIP
 WcGetGeoIP.argtypes = [CString, ctypes.POINTER(TWildcatGeoIP), CString]
 WcGetGeoIP.restype = ctypes.wintypes.BOOL
+
+
+#//! Release a buffer this DLL allocated on the caller's behalf.
+#//!
+#//! A few functions hand back memory the RPC client stub allocated --
+#//! FileSearch() is the current example.  A C/C++ caller built against
+#//! the same CRT can free() it directly, but a caller in another
+#//! language (Python/ctypes, C# P/Invoke) cannot reach this heap and
+#//! must use this instead.  Not an RPC call; never contacts wcServer.
+#//!
+#//! NULL is ignored.  Do not pass a pointer this DLL did not allocate.
+#//!
+#//! 500.3
+
+##void APIENTRY WcFreeMemory(void *pBuffer);
+WcFreeMemory = wcsrv_dll.WcFreeMemory
+WcFreeMemory.argtypes = [ctypes.c_void_p]
+WcFreeMemory.restype = None
 
 
 

@@ -1,4 +1,4 @@
-# Created by cpp2py on 2023-02-12 16:51:46.060658
+# Created by cpp2py on 2026-10-14 13:08:47.955544
 
 import ctypes
 from ctypes import wintypes
@@ -270,6 +270,15 @@ class TWildcatFTP(PropertyStruct):
         ('Reserved', ctypes.c_char*44),
     ]
 
+class TWildcatSFTP(ctypes.Structure):
+    _fields_ = [
+        ('dwVersion', WORD),
+        ('dwRevision', WORD),
+        ('dwOptions', DWORD),
+        ('MaxConnects', DWORD),
+        ('LogOptions', TWildcatLogOptions),
+    ]
+
 class TMakewild(PropertyStruct):
     _fields_ = [
         ('Version', DWORD),
@@ -301,8 +310,8 @@ class TMakewild(PropertyStruct):
         ('FTPConfig', TWildcatFTP),
         ('POP3Config', TWildcatPOP3),
         ('MAILLogOptions', TWildcatLogOptions),
-        ('Reserved2', ctypes.c_char*32),
-        ('Reserved1', ctypes.c_char*32),
+        ('SFTPConfig', TWildcatSFTP),
+        ('Reserved1', ctypes.c_char*20),
         ('SMTPLogOptions', TWildcatLogOptions),
         ('NNTPConfig', TWildcatNNTP),
         ('AllowLogonEmail', BOOL),
@@ -346,7 +355,9 @@ class TComputerConfig(PropertyStruct):
         ('ipportTelnet', TWildcatComputerIpPort),
         ('ipportSmtp', TWildcatComputerIpPort),
         ('ipportNntp', TWildcatComputerIpPort),
-        ('Reserved', BYTE*332),
+        ('ipportSFtp', TWildcatComputerIpPort),
+        ('SftpPort', DWORD),
+        ('Reserved', BYTE*320),
         ('TelnetPort', DWORD),
         ('Pop3Port', DWORD),
     ]

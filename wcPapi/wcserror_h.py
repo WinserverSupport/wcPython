@@ -1,9 +1,9 @@
-# Auto-created by cpp2wcerror.py on 2023-01-30 20:55:23.724135
+# Auto-created by cpp2wcerror.py on 2026-10-14 13:08:48.238217
 
 # Wildcat! error constants start with the WC_STATUS_BASE
 
 WC_STATUS_BASE = 0x20000000
-WC_SUCCESS                     = 0 # HLS
+WC_SUCCESS                     = 0
 WC_UNSUPPORTED_VERSION         = WC_STATUS_BASE + 1
 WC_CONTEXT_NOT_INITIALIZED     = WC_STATUS_BASE + 2
 WC_INVALID_NODE_NUMBER         = WC_STATUS_BASE + 3
@@ -14,7 +14,7 @@ WC_INVALID_INDEX               = WC_STATUS_BASE + 7
 WC_INVALID_OBJECT_ID           = WC_STATUS_BASE + 8
 WC_GROUP_ALREADY_EXISTS        = WC_STATUS_BASE + 9
 WC_GROUP_NOT_FOUND             = WC_STATUS_BASE + 10 # A
-WC_DBASE_NOT_AVAILABLE         = WC_STATUS_BASE + 11 # B   # 454.6
+WC_DBASE_NOT_AVAILABLE         = WC_STATUS_BASE + 11 # B
 WC_OBJECTID_ALREADY_EXISTS     = WC_STATUS_BASE + 12 # C
 WC_NAME_NOT_FOUND              = WC_STATUS_BASE + 13 # D
 WC_NAME_ALREADY_EXISTS         = WC_STATUS_BASE + 14 # E
@@ -58,6 +58,9 @@ WC_ANONYMOUS_DENIED            = WC_STATUS_BASE + 51 # 33
 WC_HOURS_RESTRICTED            = WC_STATUS_BASE + 52 # 34 
 WC_SECURITY_NOT_FOUND          = WC_STATUS_BASE + 53 # 35 
 WC_INVALID_USERNAME            = WC_STATUS_BASE + 54 # 36 
+WC_NOT_CONFIGURED              = WC_STATUS_BASE + 55 # 37 
+WC_NO_PUBLIC_KEYS              = WC_STATUS_BASE + 56 # 38 
+WC_PUBLIC_KEY_NOT_LISTED       = WC_STATUS_BASE + 57 # 39 
 
 # Error Map
 
@@ -118,6 +121,9 @@ wcerror_map = {
 	WC_HOURS_RESTRICTED                : ("WC_HOURS_RESTRICTED"              , "Hours Restricted"),
 	WC_SECURITY_NOT_FOUND              : ("WC_SECURITY_NOT_FOUND"            , "Security Not Found"),
 	WC_INVALID_USERNAME                : ("WC_INVALID_USERNAME"              , "Invalid Username"),
+	WC_NOT_CONFIGURED                  : ("WC_NOT_CONFIGURED"                , "Not Configured"),
+	WC_NO_PUBLIC_KEYS                  : ("WC_NO_PUBLIC_KEYS"                , "No Public Keys"),
+	WC_PUBLIC_KEY_NOT_LISTED           : ("WC_PUBLIC_KEY_NOT_LISTED"         , "Public Key Not Listed"),
 }
 
 def GetWildcatErrorStr(error_number):

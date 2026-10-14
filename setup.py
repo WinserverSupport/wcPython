@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='wcpapi',
-    version='10.0.500.2',
+    version='10.0.500.3',
     packages=['wcpapi'],
     author='Hector Santos',
     author_email='hsantos@isdg.net',
