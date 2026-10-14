@@ -36,3 +36,18 @@ than at the call.  If you see
 
 your wcsrv2.dll predates this package.  Update the Wildcat! server, or
 install the matching older wcPAPI.
+
+Output string buffers
+---------------------
+
+A function that fills a char buffer you supply, for example
+
+    WcGetUserPublicKey(userid, index, dest, destsize)
+
+needs a real writable buffer.  Pass ctypes.create_string_buffer(n),
+never a Python bytes or str object -- the DLL writes into it:
+
+    buf = ctypes.create_string_buffer(SSH_MAX_KEY_LEN + 1)
+    if WcGetUserPublicKey(userid, 1, buf, len(buf)):
+        key = buf.value.decode()
+
