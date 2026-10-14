@@ -38,6 +38,7 @@ class SYSTEMTIME(ctypes.Structure):
 #// 454.6  07/24/17 HLS     - Added WcGetGeoIP() function
 #// 454.8  03/17/19 HLS     - Added GetWildcatServerPlatform()
 #// 500.3  09/03/26 HLS     - Added WcFreeMemory()
+#//        10/14/26 HLS     - "//! DO NOT TRANSLATE name [php py pas]" marker
 #//        09/18/26 HLS     - Added LoginUserPublicKey()
 #//        09/18/26 HLS     - Added IsUserPublicKeyAuthorized()
 #//        10/11/26 HLS     - Publickey calls return WC_NO_PUBLIC_KEYS and
@@ -2022,6 +2023,11 @@ WcGetGeoIP.restype = ctypes.wintypes.BOOL
 #//! NULL is ignored.  Do not pass a pointer this DLL did not allocate.
 #//!
 #//! 500.3
+#//!
+#//! PHP scripts never hold a buffer this DLL allocated, and a PHP wrapper
+#//! would let a script free any address.  Marker read by the cpp2*
+#//! translators; no language list means all of them (php, py, pas).
+#//! DO NOT TRANSLATE WcFreeMemory php
 
 ##void APIENTRY WcFreeMemory(void *pBuffer);
 WcFreeMemory = wcsrv_dll.WcFreeMemory

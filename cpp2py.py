@@ -15,6 +15,7 @@
 # 1.1      02/02/23  HLS     fixed PropertyStruct to handle utf-8
 # 1.2      09/02/26  HLS     WcFreeMemory void* arg; void return -> None
 # 1.3      10/14/26  HLS     const & and const DWORD* args -> POINTER(type)
+# 1.4      10/14/26  HLS     honor "//! DO NOT TRANSLATE name [php py pas]"
 #***********************************************************************
 
 import os
@@ -271,6 +272,15 @@ def structures_to_ctypes(input_file, output_file, do_extra_set = []):
 
 #---------------------------------------------------------------------
 
+def no_translate(raw, lang):
+    """Names marked //! DO NOT TRANSLATE; no language list means all."""
+    names = set()
+    for m in re.finditer(r"^[ \t]*//!\s*DO NOT TRANSLATE\s+(\w+)([^\r\n]*)", raw, re.M):
+        langs = m.group(2).lower().split()
+        if not langs or lang in langs:
+            names.add(m.group(1))
+    return names
+
 def functions_to_ctypes(header_file, output_file, dll_key):
     type_map = {
         'BOOL':             'ctypes.wintypes.BOOL',
@@ -329,6 +339,9 @@ def functions_to_ctypes(header_file, output_file, dll_key):
        pyhead += f"                ('wMilliseconds', WORD)]\n"
        pyhead += f"\n"
 
+    # 1.4 10/14/26 - functions marked "//! DO NOT TRANSLATE name [py]"
+    skip = no_translate(open(header_file).read(), "py")
+
     with open(header_file, 'r') as f:
         with open(output_file, 'w') as outf:
 
@@ -355,6 +368,12 @@ def functions_to_ctypes(header_file, output_file, dll_key):
 
                     if parts:
                         ret_type, _, func_name, args = parts[0]
+
+                        if func_name in skip:
+                            outf.write(f"# {func_name}: //! DO NOT TRANSLATE\n\n")
+                            line = f.readline()
+                            if not line: break
+                            continue
 
                         debug = func_name in ["SetNodeInfo", "xWcReadFile","WcCreateDirectory","xWcGetGeoIP","xGetWildcatServerInfo","xLoginRadiusUser","xWildcatLoggedIn","xFileSearch"]
                         debug = func_name in ["GetUserVariables"]
